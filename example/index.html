@@ -619,11 +619,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
         title: 'Select Location',
         leaflet: L,
       }).then((result) => {
-        if (result) {
-          resultSingle.innerHTML = '<strong>Selected:</strong> ' + JSON.stringify(result, null, 2);
-        } else {
-          resultSingle.innerHTML = '<strong>Cancelled</strong> or overlay clicked.';
-        }
+        resultSingle.innerHTML = '<strong>Response:</strong> ' + JSON.stringify(result, null, 2);
       });
     }
 
@@ -634,11 +630,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
         title: 'Select Locations',
         leaflet: L,
       }).then((points) => {
-        if (points && points.length) {
-          resultMulti.innerHTML = '<strong>Selected ' + points.length + ' point(s):</strong>\n' + JSON.stringify(points, null, 2);
-        } else {
-          resultMulti.innerHTML = '<strong>Cancelled</strong> or list empty.';
-        }
+        resultMulti.innerHTML = '<strong>Response:</strong> ' + JSON.stringify(points, null, 2);
       });
     }
 
@@ -667,11 +659,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
         markerIcon: createRedCircleIcon(),
         leaflet: L,
       }).then((result) => {
-        if (result) {
-          resultCustomSingle.innerHTML = '<strong>Selected:</strong> ' + JSON.stringify(result, null, 2);
-        } else {
-          resultCustomSingle.innerHTML = '<strong>Cancelled</strong>.';
-        }
+        resultCustomSingle.innerHTML = '<strong>Response:</strong> ' + JSON.stringify(result, null, 2);
       });
     }
 
@@ -683,11 +671,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
         markerIcon: createGreenSquareIcon(),
         leaflet: L,
       }).then((points) => {
-        if (points && points.length) {
-          resultCustomMulti.innerHTML = '<strong>Selected ' + points.length + ' point(s):</strong>\n' + JSON.stringify(points, null, 2);
-        } else {
-          resultCustomMulti.innerHTML = '<strong>Cancelled</strong> or list empty.';
-        }
+        resultCustomMulti.innerHTML = '<strong>Response:</strong> ' + JSON.stringify(points, null, 2);
       });
     }
 
@@ -707,11 +691,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
         initialZoom: 6,
         leaflet: L,
       }).then((points) => {
-        if (points && points.length) {
-          resultInitial.innerHTML = '<strong>Result ' + points.length + ' point(s):</strong>\n' + JSON.stringify(points, null, 2);
-        } else {
-          resultInitial.innerHTML = '<strong>Cancelled</strong> or list empty.';
-        }
+        resultInitial.innerHTML = '<strong>Response:</strong> ' + JSON.stringify(points, null, 2);
       });
     }
 
