@@ -570,3 +570,14 @@
 .async-map-modal-overlay[data-theme="dark"] .async-map-modal-marker-popup .leaflet-popup-content {
   color: #e5e7eb;
 }
+
+/* Dark theme: invert entire map container, then counter-invert markers/popups so tiles are dark */
+.async-map-modal-overlay[data-theme="dark"] .async-map-modal-map.leaflet-container {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+.async-map-modal-overlay[data-theme="dark"] .async-map-modal-map .leaflet-marker-pane,
+.async-map-modal-overlay[data-theme="dark"] .async-map-modal-map .leaflet-popup-pane,
+.async-map-modal-overlay[data-theme="dark"] .async-map-modal-map .leaflet-shadow-pane {
+  filter: invert(100%) hue-rotate(180deg) brightness(105%) contrast(111%);
+}
