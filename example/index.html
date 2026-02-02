@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>async-map-modal — Promise tabanlı harita modal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="../src/async-map-modal.css" />
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --bg-card: #141922;
+      --bg-card-hover: #1a1f2e;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #f97316;
+      --accent-dim: #ea580c;
+      --border: #30363d;
+      --radius: 12px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .page {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem 1.5rem 4rem;
+    }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      padding: 4rem 0 3rem;
+      background: linear-gradient(180deg, rgba(249, 115, 22, 0.08) 0%, transparent 50%);
+      border-radius: var(--radius);
+      margin-bottom: 3rem;
+    }
+
+    .hero h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(2rem, 5vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      margin: 0 0 2rem;
+      font-size: 1.15rem;
+      color: var(--text-muted);
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      justify-content: center;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      font-family: var(--font-sans);
+      font-size: 0.9375rem;
+      font-weight: 600;
+      border-radius: 8px;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+      color: #0c0f14;
+      box-shadow: 0 4px 14px rgba(249, 115, 22, 0.4);
+    }
+
+    .btn-primary:hover {
+      box-shadow: 0 6px 20px rgba(249, 115, 22, 0.5);
+    }
+
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-dim);
+    }
+
+    /* Section */
+    section {
+      margin-bottom: 2.5rem;
+    }
+
+    section h2 {
+      margin: 0 0 1rem;
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    /* Demo cards */
+    .demo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1rem;
+    }
+
+    .demo-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.5rem;
+      transition: background 0.2s, border-color 0.2s;
+    }
+
+    .demo-card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(249, 115, 22, 0.35);
+    }
+
+    .demo-card h3 {
+      margin: 0 0 0.35rem;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text);
+    }
+
+    .demo-card p {
+      margin: 0 0 1rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    .demo-card .btn {
+      width: 100%;
+      justify-content: center;
+    }
+
+    /* Result box */
+    .result-box {
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      color: var(--text-muted);
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .result-box:empty {
+      display: none;
+    }
+
+    .result-box strong {
+      color: var(--accent);
+    }
+
+    /* Features */
+    .features {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .features li {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.75rem;
+      padding: 0.5rem 0;
+      font-size: 0.9375rem;
+      color: var(--text-muted);
+    }
+
+    .features li::before {
+      content: '';
+      flex-shrink: 0;
+      width: 6px;
+      height: 6px;
+      margin-top: 0.5rem;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Özellik chips */
+    .feature-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .feature-chips .chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.4rem 0.85rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: #fdba74;
+      background: rgba(249, 115, 22, 0.16);
+      border: 1px solid rgba(249, 115, 22, 0.4);
+      border-radius: 9999px;
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+
+    .feature-chips .chip:hover {
+      background: rgba(249, 115, 22, 0.25);
+      border-color: rgba(249, 115, 22, 0.55);
+      color: #fed7aa;
+    }
+
+    /* Code block */
+    .code-block {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem 1.5rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .code-block .keyword { color: #c678dd; }
+    .code-block .string { color: #98c379; }
+    .code-block .comment { color: #6a737d; }
+
+    /* Kullanım tabları */
+    .usage-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .usage-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem;
+      margin: 0;
+      padding: 0 0.5rem 0 0;
+      list-style: none;
+      border-bottom: 1px solid var(--border);
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    .usage-tabs [role="tab"] {
+      padding: 0.6rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -1px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: color 0.2s, border-color 0.2s;
+    }
+
+    .usage-tabs [role="tab"]:hover {
+      color: var(--text);
+    }
+
+    .usage-tabs [role="tab"][aria-selected="true"] {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    /* Theme / Language option buttons */
+    .options-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 1.5rem 2rem;
+      margin-top: 1.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+    }
+    .options-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .options-group label {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      margin-right: 0.25rem;
+    }
+    .options-group .btn-opt {
+      padding: 0.4rem 0.75rem;
+      font-size: 0.8125rem;
+      font-weight: 500;
+      background: var(--bg-card);
+      color: var(--text-muted);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      transition: background 0.2s, border-color 0.2s, color 0.2s;
+    }
+    .options-group .btn-opt:hover {
+      background: var(--bg-card-hover);
+      color: var(--text);
+      border-color: var(--accent-dim);
+    }
+    .options-group .btn-opt.active {
+      background: rgba(249, 115, 22, 0.2);
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    .usage-panel .code-block {
+      border: none;
+      border-radius: 0;
+    }
+
+    .usage-panel[hidden] {
+      display: none;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid var(--border);
+      text-align: center;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+    }
+
+    .footer code {
+      padding: 0.2em 0.5em;
+      background: var(--bg-card);
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="hero">
+      <h1>async-map-modal</h1>
+      <p>Promise tabanlı harita modal: tek veya çoklu koordinat seçimi, checkbox ile liste, tek/toplu silme.</p>
+      <div class="hero-buttons">
+        <button type="button" class="btn btn-primary" data-demo="single">Tek nokta seç</button>
+        <button type="button" class="btn btn-secondary" data-demo="multi">Çoklu nokta seç</button>
+      </div>
+      <div class="options-row" aria-label="Modal options">
+        <div class="options-group">
+          <label>Theme</label>
+          <div id="theme-buttons" class="options-group" role="group">
+            <button type="button" class="btn-opt" data-theme="light" aria-pressed="true">Light</button>
+            <button type="button" class="btn-opt" data-theme="dark" aria-pressed="false">Dark</button>
+            <button type="button" class="btn-opt" data-theme="auto" aria-pressed="false">Auto</button>
+          </div>
+        </div>
+        <div class="options-group">
+          <label>Language</label>
+          <div id="lang-buttons" class="options-group" role="group">
+            <button type="button" class="btn-opt" data-lang="tr" aria-pressed="true">TR</button>
+            <button type="button" class="btn-opt" data-lang="en" aria-pressed="false">EN</button>
+            <button type="button" class="btn-opt" data-lang="de" aria-pressed="false">DE</button>
+            <button type="button" class="btn-opt" data-lang="es" aria-pressed="false">ES</button>
+            <button type="button" class="btn-opt" data-lang="fr" aria-pressed="false">FR</button>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>Demos</h2>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <h3>Tek seçim</h3>
+          <p>Haritada tek tıklamayla bir nokta seçin. Sonuç <code>{ lat, lng }</code> veya <code>null</code> döner.</p>
+          <button type="button" class="btn btn-secondary" data-demo="single">Aç</button>
+          <div class="result-box" id="result-single"></div>
+        </div>
+        <div class="demo-card">
+          <h3>Çoklu seçim</h3>
+          <p>Birden fazla nokta ekleyin, sağdaki listeden checkbox ile seçip silin veya tümünü silin.</p>
+          <button type="button" class="btn btn-secondary" data-demo="multi">Aç</button>
+          <div class="result-box" id="result-multi"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Daha fazla örnek</h2>
+      <div class="demo-grid">
+        <div class="demo-card">
+          <h3>Özel ikon (tek seçim)</h3>
+          <p><code>markerIcon</code> ile kırmızı daire ikon kullanın. Tek nokta seçimi.</p>
+          <button type="button" class="btn btn-secondary" data-demo="custom-icon-single">Aç</button>
+          <div class="result-box" id="result-custom-single"></div>
+        </div>
+        <div class="demo-card">
+          <h3>Özel ikon (çoklu seçim)</h3>
+          <p>Aynı özel ikonla çoklu seçim: yeşil kare marker.</p>
+          <button type="button" class="btn btn-secondary" data-demo="custom-icon-multi">Aç</button>
+          <div class="result-box" id="result-custom-multi"></div>
+        </div>
+        <div class="demo-card">
+          <h3>Varsayılan noktalar</h3>
+          <p><code>initialPoints</code> ile modal açıldığında listede hazır noktalar (düzenleyip Tamam’a basın).</p>
+          <button type="button" class="btn btn-secondary" data-demo="initial-points">Aç</button>
+          <div class="result-box" id="result-initial"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Özellikler</h2>
+      <ul class="feature-chips">
+        <li><span class="chip">Promise tabanlı API (async/await)</span></li>
+        <li><span class="chip">Tek / çoklu nokta seçimi</span></li>
+        <li><span class="chip">Grid: harita + seçilenler listesi</span></li>
+        <li><span class="chip">Checkbox ile seçim ve silme</span></li>
+        <li><span class="chip">Leaflet (peer dependency)</span></li>
+        <li><span class="chip">ES modül / CommonJS / global</span></li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>Kullanım</h2>
+      <div class="usage-wrap">
+        <div class="usage-tabs" role="tablist">
+          <button type="button" role="tab" aria-selected="true" aria-controls="usage-plain" id="tab-plain">Plain JS</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="usage-react" id="tab-react">React</button>
+          <button type="button" role="tab" aria-selected="false" aria-controls="usage-electron" id="tab-electron">Electron</button>
+        </div>
+        <div id="usage-plain" class="usage-panel code-block-wrap" role="tabpanel" aria-labelledby="tab-plain">
+          <pre class="code-block"><span class="comment">// Kurulum</span>
+<span class="keyword">yarn add</span> async-map-modal leaflet
+
+<span class="comment">// Leaflet + modal CSS sayfada (script + link)</span>
+<span class="comment">// Tek seçim</span>
+<span class="keyword">const</span> result = <span class="keyword">await</span> asyncMapModal.show({ leaflet: L });
+<span class="comment">// result: { lat, lng } | null</span>
+
+<span class="comment">// Çoklu seçim</span>
+<span class="keyword">const</span> points = <span class="keyword">await</span> asyncMapModal.show({ multiSelect: <span class="keyword">true</span>, leaflet: L });
+
+<span class="comment">// Özel marker, initialPoints vb. options ile</span>
+asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</pre>
+        </div>
+        <div id="usage-react" class="usage-panel code-block-wrap" role="tabpanel" aria-labelledby="tab-react" hidden>
+          <pre class="code-block"><span class="comment">// yarn add async-map-modal leaflet</span>
+<span class="keyword">import</span> { useEffect, useState } <span class="keyword">from</span> <span class="string">'react'</span>;
+<span class="keyword">import</span> asyncMapModal <span class="keyword">from</span> <span class="string">'async-map-modal'</span>;
+<span class="keyword">import</span> <span class="string">'leaflet/dist/leaflet.css'</span>;
+<span class="keyword">import</span> <span class="string">'async-map-modal/src/async-map-modal.css'</span>;
+
+<span class="comment">// L'yi window'dan veya dynamic import ile al</span>
+<span class="keyword">const</span> L = <span class="keyword">typeof</span> window !== <span class="string">'undefined'</span> ? window.L : <span class="keyword">null</span>;
+
+<span class="keyword">function</span> <span class="keyword">LocationPicker</span>() {
+  <span class="keyword">const</span> [point, setPoint] = useState(<span class="keyword">null</span>);
+
+  <span class="keyword">const</span> openModal = <span class="keyword">async</span> () => {
+    <span class="keyword">if</span> (!L) <span class="keyword">return</span>;
+    <span class="keyword">const</span> result = <span class="keyword">await</span> asyncMapModal.show({ leaflet: L });
+    <span class="keyword">if</span> (result) setPoint(result);
+  };
+
+  <span class="keyword">return</span> (
+    &lt;&gt;
+      &lt;button onClick={openModal}&gt;Konum seç&lt;/button&gt;
+      {point && &lt;p&gt;{point.lat}, {point.lng}&lt;/p&gt;}
+    &lt;/&gt;
+  );
+}</pre>
+        </div>
+        <div id="usage-electron" class="usage-panel code-block-wrap" role="tabpanel" aria-labelledby="tab-electron" hidden>
+          <pre class="code-block"><span class="comment">// Renderer process: Leaflet + modal script/style yüklü olmalı</span>
+<span class="comment">// preload ile nodeIntegration: false kullanıyorsan L'yi renderer'da script tag ile al</span>
+
+<span class="keyword">const</span> { asyncMapModal } = <span class="keyword">require</span>(<span class="string">'async-map-modal'</span>);
+<span class="keyword">const</span> L = <span class="keyword">typeof</span> window !== <span class="string">'undefined'</span> ? window.L : <span class="keyword">null</span>;
+
+<span class="comment">// Pencere içinde harita modal açmak</span>
+<span class="keyword">async function</span> pickLocation() {
+  <span class="keyword">if</span> (!L) <span class="keyword">return</span>;
+  <span class="keyword">const</span> result = <span class="keyword">await</span> asyncMapModal.show({
+    title: <span class="string">'Konum Seç'</span>,
+    leaflet: L,
+    multiSelect: <span class="keyword">true</span>,
+  });
+  <span class="keyword">return</span> result;
+}
+
+<span class="comment">// index.html (renderer): leaflet.css, async-map-modal.css, leaflet.js, asyncMapModal.js</span></pre>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p><code>yarn add async-map-modal leaflet</code></p>
+      <p>Leaflet CSS ve paket stilini sayfaya ekleyin; <code>leaflet</code> global (<code>window.L</code>) veya <code>options.leaflet</code> ile verin.</p>
+    </footer>
+  </div>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script type="module">
+    import asyncMapModal from '../src/asyncMapModal.js';
+
+    window.asyncMapModal = asyncMapModal;
+    const L = window.L;
+
+    // Theme / Language: sync UI from config and on click
+    function updateThemeButtons() {
+      const config = asyncMapModal.getConfig();
+      const theme = config.darkMode || 'light';
+      document.querySelectorAll('[data-theme]').forEach((btn) => {
+        const isActive = btn.getAttribute('data-theme') === theme;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+    function updateLanguageButtons() {
+      const config = asyncMapModal.getConfig();
+      const lang = (config.language || 'tr').toLowerCase().slice(0, 2);
+      document.querySelectorAll('[data-lang]').forEach((btn) => {
+        const isActive = btn.getAttribute('data-lang').toLowerCase() === lang;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      });
+    }
+    document.getElementById('theme-buttons').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-theme]');
+      if (!btn) return;
+      asyncMapModal.setTheme(btn.getAttribute('data-theme'));
+      updateThemeButtons();
+    });
+    document.getElementById('lang-buttons').addEventListener('click', (e) => {
+      const btn = e.target.closest('[data-lang]');
+      if (!btn) return;
+      asyncMapModal.setLanguage(btn.getAttribute('data-lang'));
+      updateLanguageButtons();
+    });
+    updateThemeButtons();
+    updateLanguageButtons();
+
+    const resultSingle = document.getElementById('result-single');
+    const resultMulti = document.getElementById('result-multi');
+    const resultCustomSingle = document.getElementById('result-custom-single');
+    const resultCustomMulti = document.getElementById('result-custom-multi');
+    const resultInitial = document.getElementById('result-initial');
+
+    function runSingle() {
+      resultSingle.textContent = 'Modal açılıyor…';
+      asyncMapModal.show({
+        title: 'Konum Seçin',
+        leaflet: L,
+      }).then((result) => {
+        if (result) {
+          resultSingle.innerHTML = '<strong>Seçilen:</strong> ' + JSON.stringify(result, null, 2);
+        } else {
+          resultSingle.innerHTML = '<strong>İptal</strong> veya overlay tıklandı.';
+        }
+      });
+    }
+
+    function runMulti() {
+      resultMulti.textContent = 'Modal açılıyor…';
+      asyncMapModal.show({
+        multiSelect: true,
+        title: 'Konumları Seçin',
+        leaflet: L,
+      }).then((points) => {
+        if (points && points.length) {
+          resultMulti.innerHTML = '<strong>Seçilen ' + points.length + ' nokta:</strong>\n' + JSON.stringify(points, null, 2);
+        } else {
+          resultMulti.innerHTML = '<strong>İptal</strong> veya liste boş.';
+        }
+      });
+    }
+
+    function createRedCircleIcon() {
+      return L.divIcon({
+        className: 'example-custom-marker',
+        html: '<span class="example-marker-red"></span>',
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      });
+    }
+
+    function createGreenSquareIcon() {
+      return L.divIcon({
+        className: 'example-custom-marker',
+        html: '<span class="example-marker-green"></span>',
+        iconSize: [20, 20],
+        iconAnchor: [10, 10],
+      });
+    }
+
+    function runCustomIconSingle() {
+      resultCustomSingle.textContent = 'Modal açılıyor…';
+      asyncMapModal.show({
+        title: 'Özel ikon — tek nokta',
+        markerIcon: createRedCircleIcon(),
+        leaflet: L,
+      }).then((result) => {
+        if (result) {
+          resultCustomSingle.innerHTML = '<strong>Seçilen:</strong> ' + JSON.stringify(result, null, 2);
+        } else {
+          resultCustomSingle.innerHTML = '<strong>İptal</strong>.';
+        }
+      });
+    }
+
+    function runCustomIconMulti() {
+      resultCustomMulti.textContent = 'Modal açılıyor…';
+      asyncMapModal.show({
+        multiSelect: true,
+        title: 'Özel ikon — çoklu nokta',
+        markerIcon: createGreenSquareIcon(),
+        leaflet: L,
+      }).then((points) => {
+        if (points && points.length) {
+          resultCustomMulti.innerHTML = '<strong>Seçilen ' + points.length + ' nokta:</strong>\n' + JSON.stringify(points, null, 2);
+        } else {
+          resultCustomMulti.innerHTML = '<strong>İptal</strong> veya liste boş.';
+        }
+      });
+    }
+
+    const defaultLocations = [
+      { lat: 39.925533, lng: 32.866287 },
+      { lat: 41.008238, lng: 28.978359 },
+      { lat: 38.419218, lng: 27.128691 },
+    ];
+
+    function runInitialPoints() {
+      resultInitial.textContent = 'Modal açılıyor…';
+      asyncMapModal.show({
+        multiSelect: true,
+        title: 'Varsayılan noktalarla başla',
+        initialPoints: defaultLocations,
+        initialCenter: [39.5, 32.5],
+        initialZoom: 6,
+        leaflet: L,
+      }).then((points) => {
+        if (points && points.length) {
+          resultInitial.innerHTML = '<strong>Sonuç ' + points.length + ' nokta:</strong>\n' + JSON.stringify(points, null, 2);
+        } else {
+          resultInitial.innerHTML = '<strong>İptal</strong> veya liste boş.';
+        }
+      });
+    }
+
+    document.querySelectorAll('[data-demo="single"]').forEach((el) => el.addEventListener('click', runSingle));
+    document.querySelectorAll('[data-demo="multi"]').forEach((el) => el.addEventListener('click', runMulti));
+    document.querySelectorAll('[data-demo="custom-icon-single"]').forEach((el) => el.addEventListener('click', runCustomIconSingle));
+    document.querySelectorAll('[data-demo="custom-icon-multi"]').forEach((el) => el.addEventListener('click', runCustomIconMulti));
+    document.querySelectorAll('[data-demo="initial-points"]').forEach((el) => el.addEventListener('click', runInitialPoints));
+
+    // Kullanım tabları
+    const usageTabs = document.querySelectorAll('.usage-tabs [role="tab"]');
+    const usagePanels = document.querySelectorAll('.usage-panel');
+    usageTabs.forEach((tab) => {
+      tab.addEventListener('click', () => {
+        const targetId = tab.getAttribute('aria-controls');
+        usageTabs.forEach((t) => t.setAttribute('aria-selected', 'false'));
+        usagePanels.forEach((p) => p.setAttribute('hidden', ''));
+        tab.setAttribute('aria-selected', 'true');
+        const panel = document.getElementById(targetId);
+        if (panel) {
+          panel.removeAttribute('hidden');
+        }
+      });
+    });
+  </script>
+  <style>
+    .example-custom-marker { background: none !important; border: none !important; }
+    .example-marker-red {
+      display: block;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #dc2626;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+    .example-marker-green {
+      display: block;
+      width: 20px;
+      height: 20px;
+      border-radius: 4px;
+      background: #16a34a;
+      border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.4);
+    }
+  </style>
+</body>
+</html>

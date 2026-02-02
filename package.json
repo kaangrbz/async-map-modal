@@ -1,0 +1,54 @@
+{
+  "name": "async-map-modal",
+  "version": "1.0.0",
+  "description": "Promise tabanlı harita modal: kullanıcıya modal içinde harita gösterir, koordinat seçtirir ve seçimi Promise ile döndürür. async-modal tarzı API.",
+  "main": "src/asyncMapModal.js",
+  "module": "src/asyncMapModal.js",
+  "types": "src/async-map-modal.d.ts",
+  "style": "src/async-map-modal.css",
+  "exports": {
+    ".": {
+      "import": "./src/asyncMapModal.js",
+      "require": "./src/asyncMapModal.js",
+      "default": "./src/asyncMapModal.js"
+    },
+    "./style": "./src/async-map-modal.css"
+  },
+  "files": [
+    "src",
+    "README.md",
+    "LICENSE",
+    "CHANGELOG.md"
+  ],
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "example": "npx serve . -p 3000"
+  },
+  "keywords": [
+    "modal",
+    "map",
+    "leaflet",
+    "coordinates",
+    "async",
+    "promise",
+    "async-map-modal",
+    "map-modal",
+    "location-picker"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/async-map-modal.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-username/async-map-modal/issues"
+  },
+  "homepage": "https://github.com/your-username/async-map-modal#readme",
+  "peerDependencies": {
+    "leaflet": ">=1.7.0"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  }
+}
