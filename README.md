@@ -1,6 +1,8 @@
 # async-map-modal
 
-Promise-based map modal component. **Full API parameter documentation:** [docs/API.html](docs/API.html) (also [docs/API.md](docs/API.md) in Turkish) Opens a Leaflet map inside a modal; the user selects coordinates by clicking on the map, and the selection is returned via a Promise. Designed with the same publishable structure (exports, style, API style) as the [async-modal](https://www.npmjs.com/package/async-modal) package.
+**Live demo:** [https://kaangrbz.github.io/async-map-modal/](https://kaangrbz.github.io/async-map-modal/)
+
+Promise-based map modal component. **Full API parameter documentation:** [example/docs.html](example/docs.html) Opens a Leaflet map inside a modal; the user selects coordinates by clicking on the map, and the selection is returned via a Promise. Designed with the same publishable structure (exports, style, API style) as the [async-modal](https://www.npmjs.com/package/async-modal) package.
 
 ## Features
 
@@ -9,7 +11,7 @@ Promise-based map modal component. **Full API parameter documentation:** [docs/A
 - **Multi selection** (`multiSelect: true`): multiple points on the map, list on the right; checkbox selection; delete one by one or delete selected/all; returns `Array<{ lat, lng }> | null`
 - Grid layout: in multi-select mode, map on the left, selected points list on the right
 - ES module, CommonJS, and global (`window.asyncMapModal`) support
-- Styles are imported automatically with the main module (when using a bundler); optional `async-map-modal/style` for styles-only or non-bundler setups
+- Modal CSS is injected automatically when the main module loads (runtime `<link>` via `import.meta.url`; no MIME error). Optional: `async-map-modal/style` for styles-only
 - Dependency: Leaflet only (peer dependency)
 - Keyboard: ESC to close, Enter to confirm; Tab for focus trap inside the modal
 - Copy coordinates (Copy button in single mode and on each list row in multi mode)
@@ -35,18 +37,14 @@ Include Leaflet CSS on the page (for Leaflet’s own styles):
 <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
 ```
 
-Or in JS (with a bundler, modal CSS is loaded automatically when you import the main module):
+Or in JS (modal CSS is injected automatically when you import the main module):
 
 ```js
 import 'leaflet/dist/leaflet.css';
-import asyncMapModal from 'async-map-modal';  // CSS included
+import asyncMapModal from 'async-map-modal';
 ```
 
-Without a bundler (e.g. plain script tag), add the modal CSS manually:
-
-```js
-import 'async-map-modal/style';  // optional: styles only
-```
+To load styles only (e.g. separate link tag): `import 'async-map-modal/style'`.
 
 ## Usage
 
@@ -160,7 +158,7 @@ const points = await asyncMapModal.show({
 const asyncMapModal = require('async-map-modal');
 const L = require('leaflet');
 require('leaflet/dist/leaflet.css');
-// Modal CSS is included when the main module is required (bundler); otherwise: require('async-map-modal/style');
+require('async-map-modal/style'); /* CSS auto-injected with ESM; with CommonJS include style */
 
 asyncMapModal.show({ leaflet: L }).then((result) => {
   if (result) console.log(result.lat, result.lng);
@@ -221,11 +219,7 @@ Opens the modal and returns a Promise based on the user’s selection.
 
 ## Styling
 
-Default styles are loaded automatically when you import the main module (with a bundler). To load styles only (e.g. without a bundler or for a separate link tag), use:
-
-```js
-import 'async-map-modal/style';
-```
+Styles are injected automatically when the main module runs (a `<link rel="stylesheet">` is added with `href` from `new URL('./async-map-modal.css', import.meta.url)`), so no separate CSS import is required and MIME type issues are avoided. For styles-only (e.g. custom build), use `import 'async-map-modal/style'`.
 
 CSS variables for customization:
 

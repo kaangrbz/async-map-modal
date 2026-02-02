@@ -5,7 +5,17 @@
  * Çoklu seçim modunda liste sağda, checkbox ile seçim ve tek/toplu silme desteklenir.
  */
 
-import './async-map-modal.css';
+/** Best practice: CSS'i import ile değil runtime'da <link> enjekte ederek yükle (MIME type hatası önlenir). */
+if (typeof document !== 'undefined' && document.head && typeof import.meta !== 'undefined' && import.meta.url) {
+  const linkId = 'async-map-modal-styles';
+  if (!document.getElementById(linkId)) {
+    const link = document.createElement('link');
+    link.id = linkId;
+    link.rel = 'stylesheet';
+    link.href = new URL('./async-map-modal.css', import.meta.url).href;
+    document.head.appendChild(link);
+  }
+}
 
 const DEFAULT_CENTER = [38.7143, 35.5323];
 const DEFAULT_ZOOM = 13;
