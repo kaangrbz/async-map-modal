@@ -1,6 +1,6 @@
 {
   "name": "async-map-modal",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Promise tabanlı harita modal: kullanıcıya modal içinde harita gösterir, koordinat seçtirir ve seçimi Promise ile döndürür. async-modal tarzı API.",
   "main": "src/asyncMapModal.js",
   "module": "src/asyncMapModal.js",
