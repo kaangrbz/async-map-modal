@@ -1,9 +1,14 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>async-map-modal — Promise tabanlı harita modal</title>
+  <title>async-map-modal — Promise-based map modal</title>
+  <link rel="icon" type="image/x-icon" href="../src/icons/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="../src/icons/favicon-32x32.png" />
+  <link rel="icon" type="image/png" sizes="16x16" href="../src/icons/favicon-16x16.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="../src/icons/apple-touch-icon.png" />
+  <link rel="manifest" href="../src/icons/site.webmanifest" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -52,6 +57,12 @@
       background: linear-gradient(180deg, rgba(249, 115, 22, 0.08) 0%, transparent 50%);
       border-radius: var(--radius);
       margin-bottom: 3rem;
+    }
+
+    .hero-logo {
+      display: block;
+      margin: 0 auto 1rem;
+      object-fit: contain;
     }
 
     .hero h1 {
@@ -219,7 +230,7 @@
       background: var(--accent);
     }
 
-    /* Özellik chips */
+    /* Feature chips */
     .feature-chips {
       display: flex;
       flex-wrap: wrap;
@@ -265,7 +276,7 @@
     .code-block .string { color: #98c379; }
     .code-block .comment { color: #6a737d; }
 
-    /* Kullanım tabları */
+    /* Usage tabs */
     .usage-wrap {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -393,11 +404,12 @@
 <body>
   <div class="page">
     <header class="hero">
+      <img src="../src/images/logo.png" alt="async-map-modal" class="hero-logo" width="80" height="80" />
       <h1>async-map-modal</h1>
-      <p>Promise tabanlı harita modal: tek veya çoklu koordinat seçimi, checkbox ile liste, tek/toplu silme.</p>
+      <p>Promise-based map modal: single or multiple coordinate selection, list with checkboxes, single/bulk delete.</p>
       <div class="hero-buttons">
-        <button type="button" class="btn btn-primary" data-demo="single">Tek nokta seç</button>
-        <button type="button" class="btn btn-secondary" data-demo="multi">Çoklu nokta seç</button>
+        <button type="button" class="btn btn-primary" data-demo="single">Select single point</button>
+        <button type="button" class="btn btn-secondary" data-demo="multi">Select multiple points</button>
       </div>
       <div class="options-row" aria-label="Modal options">
         <div class="options-group">
@@ -411,8 +423,8 @@
         <div class="options-group">
           <label>Language</label>
           <div id="lang-buttons" class="options-group" role="group">
-            <button type="button" class="btn-opt" data-lang="tr" aria-pressed="true">TR</button>
-            <button type="button" class="btn-opt" data-lang="en" aria-pressed="false">EN</button>
+            <button type="button" class="btn-opt" data-lang="tr" aria-pressed="false">TR</button>
+            <button type="button" class="btn-opt" data-lang="en" aria-pressed="true">EN</button>
             <button type="button" class="btn-opt" data-lang="de" aria-pressed="false">DE</button>
             <button type="button" class="btn-opt" data-lang="es" aria-pressed="false">ES</button>
             <button type="button" class="btn-opt" data-lang="fr" aria-pressed="false">FR</button>
@@ -425,58 +437,58 @@
       <h2>Demos</h2>
       <div class="demo-grid">
         <div class="demo-card">
-          <h3>Tek seçim</h3>
-          <p>Haritada tek tıklamayla bir nokta seçin. Sonuç <code>{ lat, lng }</code> veya <code>null</code> döner.</p>
-          <button type="button" class="btn btn-secondary" data-demo="single">Aç</button>
+          <h3>Single selection</h3>
+          <p>Click once on the map to select a point. Returns <code>{ lat, lng }</code> or <code>null</code>.</p>
+          <button type="button" class="btn btn-secondary" data-demo="single">Open</button>
           <div class="result-box" id="result-single"></div>
         </div>
         <div class="demo-card">
-          <h3>Çoklu seçim</h3>
-          <p>Birden fazla nokta ekleyin, sağdaki listeden checkbox ile seçip silin veya tümünü silin.</p>
-          <button type="button" class="btn btn-secondary" data-demo="multi">Aç</button>
+          <h3>Multiple selection</h3>
+          <p>Add multiple points, select and delete from the list with checkboxes, or clear all.</p>
+          <button type="button" class="btn btn-secondary" data-demo="multi">Open</button>
           <div class="result-box" id="result-multi"></div>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Daha fazla örnek</h2>
+      <h2>More examples</h2>
       <div class="demo-grid">
         <div class="demo-card">
-          <h3>Özel ikon (tek seçim)</h3>
-          <p><code>markerIcon</code> ile kırmızı daire ikon kullanın. Tek nokta seçimi.</p>
-          <button type="button" class="btn btn-secondary" data-demo="custom-icon-single">Aç</button>
+          <h3>Custom icon (single selection)</h3>
+          <p>Use red circle icon with <code>markerIcon</code>. Single point selection.</p>
+          <button type="button" class="btn btn-secondary" data-demo="custom-icon-single">Open</button>
           <div class="result-box" id="result-custom-single"></div>
         </div>
         <div class="demo-card">
-          <h3>Özel ikon (çoklu seçim)</h3>
-          <p>Aynı özel ikonla çoklu seçim: yeşil kare marker.</p>
-          <button type="button" class="btn btn-secondary" data-demo="custom-icon-multi">Aç</button>
+          <h3>Custom icon (multiple selection)</h3>
+          <p>Multiple selection with custom icon: green square marker.</p>
+          <button type="button" class="btn btn-secondary" data-demo="custom-icon-multi">Open</button>
           <div class="result-box" id="result-custom-multi"></div>
         </div>
         <div class="demo-card">
-          <h3>Varsayılan noktalar</h3>
-          <p><code>initialPoints</code> ile modal açıldığında listede hazır noktalar (düzenleyip Tamam’a basın).</p>
-          <button type="button" class="btn btn-secondary" data-demo="initial-points">Aç</button>
+          <h3>Default points</h3>
+          <p>Pre-filled points in the list when the modal opens via <code>initialPoints</code> (edit and click OK).</p>
+          <button type="button" class="btn btn-secondary" data-demo="initial-points">Open</button>
           <div class="result-box" id="result-initial"></div>
         </div>
       </div>
     </section>
 
     <section>
-      <h2>Özellikler</h2>
+      <h2>Features</h2>
       <ul class="feature-chips">
-        <li><span class="chip">Promise tabanlı API (async/await)</span></li>
-        <li><span class="chip">Tek / çoklu nokta seçimi</span></li>
-        <li><span class="chip">Grid: harita + seçilenler listesi</span></li>
-        <li><span class="chip">Checkbox ile seçim ve silme</span></li>
+        <li><span class="chip">Promise-based API (async/await)</span></li>
+        <li><span class="chip">Single / multiple point selection</span></li>
+        <li><span class="chip">Grid: map + selected list</span></li>
+        <li><span class="chip">Selection and delete with checkboxes</span></li>
         <li><span class="chip">Leaflet (peer dependency)</span></li>
-        <li><span class="chip">ES modül / CommonJS / global</span></li>
+        <li><span class="chip">ES module / CommonJS / global</span></li>
       </ul>
     </section>
 
     <section>
-      <h2>Kullanım</h2>
+      <h2>Usage</h2>
       <div class="usage-wrap">
         <div class="usage-tabs" role="tablist">
           <button type="button" role="tab" aria-selected="true" aria-controls="usage-plain" id="tab-plain">Plain JS</button>
@@ -484,18 +496,18 @@
           <button type="button" role="tab" aria-selected="false" aria-controls="usage-electron" id="tab-electron">Electron</button>
         </div>
         <div id="usage-plain" class="usage-panel code-block-wrap" role="tabpanel" aria-labelledby="tab-plain">
-          <pre class="code-block"><span class="comment">// Kurulum</span>
+          <pre class="code-block"><span class="comment">// Install</span>
 <span class="keyword">yarn add</span> async-map-modal leaflet
 
-<span class="comment">// Leaflet + modal CSS sayfada (script + link)</span>
-<span class="comment">// Tek seçim</span>
+<span class="comment">// Leaflet + modal CSS on page (script + link)</span>
+<span class="comment">// Single selection</span>
 <span class="keyword">const</span> result = <span class="keyword">await</span> asyncMapModal.show({ leaflet: L });
 <span class="comment">// result: { lat, lng } | null</span>
 
-<span class="comment">// Çoklu seçim</span>
+<span class="comment">// Multiple selection</span>
 <span class="keyword">const</span> points = <span class="keyword">await</span> asyncMapModal.show({ multiSelect: <span class="keyword">true</span>, leaflet: L });
 
-<span class="comment">// Özel marker, initialPoints vb. options ile</span>
+<span class="comment">// Custom marker, initialPoints etc. via options</span>
 asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</pre>
         </div>
         <div id="usage-react" class="usage-panel code-block-wrap" role="tabpanel" aria-labelledby="tab-react" hidden>
@@ -505,7 +517,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
 <span class="keyword">import</span> <span class="string">'leaflet/dist/leaflet.css'</span>;
 <span class="keyword">import</span> <span class="string">'async-map-modal/src/async-map-modal.css'</span>;
 
-<span class="comment">// L'yi window'dan veya dynamic import ile al</span>
+<span class="comment">// Get L from window or via dynamic import</span>
 <span class="keyword">const</span> L = <span class="keyword">typeof</span> window !== <span class="string">'undefined'</span> ? window.L : <span class="keyword">null</span>;
 
 <span class="keyword">function</span> <span class="keyword">LocationPicker</span>() {
@@ -519,24 +531,24 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
 
   <span class="keyword">return</span> (
     &lt;&gt;
-      &lt;button onClick={openModal}&gt;Konum seç&lt;/button&gt;
+      &lt;button onClick={openModal}&gt;Select location&lt;/button&gt;
       {point && &lt;p&gt;{point.lat}, {point.lng}&lt;/p&gt;}
     &lt;/&gt;
   );
 }</pre>
         </div>
         <div id="usage-electron" class="usage-panel code-block-wrap" role="tabpanel" aria-labelledby="tab-electron" hidden>
-          <pre class="code-block"><span class="comment">// Renderer process: Leaflet + modal script/style yüklü olmalı</span>
-<span class="comment">// preload ile nodeIntegration: false kullanıyorsan L'yi renderer'da script tag ile al</span>
+          <pre class="code-block"><span class="comment">// Renderer process: Leaflet + modal script/style must be loaded</span>
+<span class="comment">// If using nodeIntegration: false with preload, get L in renderer via script tag</span>
 
 <span class="keyword">const</span> { asyncMapModal } = <span class="keyword">require</span>(<span class="string">'async-map-modal'</span>);
 <span class="keyword">const</span> L = <span class="keyword">typeof</span> window !== <span class="string">'undefined'</span> ? window.L : <span class="keyword">null</span>;
 
-<span class="comment">// Pencere içinde harita modal açmak</span>
+<span class="comment">// Open map modal in window</span>
 <span class="keyword">async function</span> pickLocation() {
   <span class="keyword">if</span> (!L) <span class="keyword">return</span>;
   <span class="keyword">const</span> result = <span class="keyword">await</span> asyncMapModal.show({
-    title: <span class="string">'Konum Seç'</span>,
+    title: <span class="string">'Select Location'</span>,
     leaflet: L,
     multiSelect: <span class="keyword">true</span>,
   });
@@ -550,7 +562,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
 
     <footer class="footer">
       <p><code>yarn add async-map-modal leaflet</code></p>
-      <p>Leaflet CSS ve paket stilini sayfaya ekleyin; <code>leaflet</code> global (<code>window.L</code>) veya <code>options.leaflet</code> ile verin.</p>
+      <p>Add Leaflet CSS and package styles to the page; provide <code>leaflet</code> as global (<code>window.L</code>) or via <code>options.leaflet</code>.</p>
     </footer>
   </div>
 
@@ -573,7 +585,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
     }
     function updateLanguageButtons() {
       const config = asyncMapModal.getConfig();
-      const lang = (config.language || 'tr').toLowerCase().slice(0, 2);
+      const lang = (config.language || 'en').toLowerCase().slice(0, 2);
       document.querySelectorAll('[data-lang]').forEach((btn) => {
         const isActive = btn.getAttribute('data-lang').toLowerCase() === lang;
         btn.classList.toggle('active', isActive);
@@ -602,30 +614,30 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
     const resultInitial = document.getElementById('result-initial');
 
     function runSingle() {
-      resultSingle.textContent = 'Modal açılıyor…';
+      resultSingle.textContent = 'Opening modal…';
       asyncMapModal.show({
-        title: 'Konum Seçin',
+        title: 'Select Location',
         leaflet: L,
       }).then((result) => {
         if (result) {
-          resultSingle.innerHTML = '<strong>Seçilen:</strong> ' + JSON.stringify(result, null, 2);
+          resultSingle.innerHTML = '<strong>Selected:</strong> ' + JSON.stringify(result, null, 2);
         } else {
-          resultSingle.innerHTML = '<strong>İptal</strong> veya overlay tıklandı.';
+          resultSingle.innerHTML = '<strong>Cancelled</strong> or overlay clicked.';
         }
       });
     }
 
     function runMulti() {
-      resultMulti.textContent = 'Modal açılıyor…';
+      resultMulti.textContent = 'Opening modal…';
       asyncMapModal.show({
         multiSelect: true,
-        title: 'Konumları Seçin',
+        title: 'Select Locations',
         leaflet: L,
       }).then((points) => {
         if (points && points.length) {
-          resultMulti.innerHTML = '<strong>Seçilen ' + points.length + ' nokta:</strong>\n' + JSON.stringify(points, null, 2);
+          resultMulti.innerHTML = '<strong>Selected ' + points.length + ' point(s):</strong>\n' + JSON.stringify(points, null, 2);
         } else {
-          resultMulti.innerHTML = '<strong>İptal</strong> veya liste boş.';
+          resultMulti.innerHTML = '<strong>Cancelled</strong> or list empty.';
         }
       });
     }
@@ -649,32 +661,32 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
     }
 
     function runCustomIconSingle() {
-      resultCustomSingle.textContent = 'Modal açılıyor…';
+      resultCustomSingle.textContent = 'Opening modal…';
       asyncMapModal.show({
-        title: 'Özel ikon — tek nokta',
+        title: 'Custom icon — single point',
         markerIcon: createRedCircleIcon(),
         leaflet: L,
       }).then((result) => {
         if (result) {
-          resultCustomSingle.innerHTML = '<strong>Seçilen:</strong> ' + JSON.stringify(result, null, 2);
+          resultCustomSingle.innerHTML = '<strong>Selected:</strong> ' + JSON.stringify(result, null, 2);
         } else {
-          resultCustomSingle.innerHTML = '<strong>İptal</strong>.';
+          resultCustomSingle.innerHTML = '<strong>Cancelled</strong>.';
         }
       });
     }
 
     function runCustomIconMulti() {
-      resultCustomMulti.textContent = 'Modal açılıyor…';
+      resultCustomMulti.textContent = 'Opening modal…';
       asyncMapModal.show({
         multiSelect: true,
-        title: 'Özel ikon — çoklu nokta',
+        title: 'Custom icon — multiple points',
         markerIcon: createGreenSquareIcon(),
         leaflet: L,
       }).then((points) => {
         if (points && points.length) {
-          resultCustomMulti.innerHTML = '<strong>Seçilen ' + points.length + ' nokta:</strong>\n' + JSON.stringify(points, null, 2);
+          resultCustomMulti.innerHTML = '<strong>Selected ' + points.length + ' point(s):</strong>\n' + JSON.stringify(points, null, 2);
         } else {
-          resultCustomMulti.innerHTML = '<strong>İptal</strong> veya liste boş.';
+          resultCustomMulti.innerHTML = '<strong>Cancelled</strong> or list empty.';
         }
       });
     }
@@ -686,19 +698,19 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
     ];
 
     function runInitialPoints() {
-      resultInitial.textContent = 'Modal açılıyor…';
+      resultInitial.textContent = 'Opening modal…';
       asyncMapModal.show({
         multiSelect: true,
-        title: 'Varsayılan noktalarla başla',
+        title: 'Start with default points',
         initialPoints: defaultLocations,
         initialCenter: [39.5, 32.5],
         initialZoom: 6,
         leaflet: L,
       }).then((points) => {
         if (points && points.length) {
-          resultInitial.innerHTML = '<strong>Sonuç ' + points.length + ' nokta:</strong>\n' + JSON.stringify(points, null, 2);
+          resultInitial.innerHTML = '<strong>Result ' + points.length + ' point(s):</strong>\n' + JSON.stringify(points, null, 2);
         } else {
-          resultInitial.innerHTML = '<strong>İptal</strong> veya liste boş.';
+          resultInitial.innerHTML = '<strong>Cancelled</strong> or list empty.';
         }
       });
     }
@@ -709,7 +721,7 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
     document.querySelectorAll('[data-demo="custom-icon-multi"]').forEach((el) => el.addEventListener('click', runCustomIconMulti));
     document.querySelectorAll('[data-demo="initial-points"]').forEach((el) => el.addEventListener('click', runInitialPoints));
 
-    // Kullanım tabları
+    // Usage tabs
     const usageTabs = document.querySelectorAll('.usage-tabs [role="tab"]');
     const usagePanels = document.querySelectorAll('.usage-panel');
     usageTabs.forEach((tab) => {
