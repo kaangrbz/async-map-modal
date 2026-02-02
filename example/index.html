@@ -13,7 +13,6 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <link rel="stylesheet" href="../src/async-map-modal.css" />
   <style>
     :root {
       --bg: #0c0f14;
@@ -522,8 +521,8 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
 <span class="keyword">import</span> { useEffect, useState } <span class="keyword">from</span> <span class="string">'react'</span>;
 <span class="keyword">import</span> asyncMapModal <span class="keyword">from</span> <span class="string">'async-map-modal'</span>;
 <span class="keyword">import</span> <span class="string">'leaflet/dist/leaflet.css'</span>;
-<span class="keyword">import</span> <span class="string">'async-map-modal/src/async-map-modal.css'</span>;
 
+<span class="comment">// Modal CSS is imported automatically with the main module</span>
 <span class="comment">// Get L from window or via dynamic import</span>
 <span class="keyword">const</span> L = <span class="keyword">typeof</span> window !== <span class="string">'undefined'</span> ? window.L : <span class="keyword">null</span>;
 
@@ -562,14 +561,14 @@ asyncMapModal.show({ markerIcon: redIcon, initialPoints: [...], leaflet: L });</
   <span class="keyword">return</span> result;
 }
 
-<span class="comment">// index.html (renderer): leaflet.css, async-map-modal.css, leaflet.js, asyncMapModal.js</span></pre>
+<span class="comment">// index.html (renderer): leaflet.css, leaflet.js, asyncMapModal.js (modal CSS included by main module if bundled)</span></pre>
         </div>
       </div>
     </section>
 
     <footer class="footer">
       <p><code>yarn add async-map-modal leaflet</code></p>
-      <p>Add Leaflet CSS and package styles to the page; provide <code>leaflet</code> as global (<code>window.L</code>) or via <code>options.leaflet</code>.</p>
+      <p>Add Leaflet CSS to the page; modal CSS is loaded automatically when using a bundler, or add <code>async-map-modal/style</code> / <code>async-map-modal.css</code> manually. Provide <code>leaflet</code> as global (<code>window.L</code>) or via <code>options.leaflet</code>.</p>
     </footer>
   </div>
 

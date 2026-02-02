@@ -9,7 +9,7 @@ Promise-based map modal component. **Full API parameter documentation:** [docs/A
 - **Multi selection** (`multiSelect: true`): multiple points on the map, list on the right; checkbox selection; delete one by one or delete selected/all; returns `Array<{ lat, lng }> | null`
 - Grid layout: in multi-select mode, map on the left, selected points list on the right
 - ES module, CommonJS, and global (`window.asyncMapModal`) support
-- Styles can be imported separately (`async-map-modal/style`)
+- Styles are imported automatically with the main module (when using a bundler); optional `async-map-modal/style` for styles-only or non-bundler setups
 - Dependency: Leaflet only (peer dependency)
 - Keyboard: ESC to close, Enter to confirm; Tab for focus trap inside the modal
 - Copy coordinates (Copy button in single mode and on each list row in multi mode)
@@ -35,11 +35,17 @@ Include Leaflet CSS on the page (for Leaflet’s own styles):
 <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
 ```
 
-Or in JS:
+Or in JS (with a bundler, modal CSS is loaded automatically when you import the main module):
 
 ```js
 import 'leaflet/dist/leaflet.css';
-import 'async-map-modal/style';
+import asyncMapModal from 'async-map-modal';  // CSS included
+```
+
+Without a bundler (e.g. plain script tag), add the modal CSS manually:
+
+```js
+import 'async-map-modal/style';  // optional: styles only
 ```
 
 ## Usage
@@ -50,7 +56,6 @@ import 'async-map-modal/style';
 import asyncMapModal from 'async-map-modal';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import 'async-map-modal/style';
 
 const result = await asyncMapModal.show({
   title: 'Select location',
@@ -155,7 +160,7 @@ const points = await asyncMapModal.show({
 const asyncMapModal = require('async-map-modal');
 const L = require('leaflet');
 require('leaflet/dist/leaflet.css');
-require('async-map-modal/style');
+// Modal CSS is included when the main module is required (bundler); otherwise: require('async-map-modal/style');
 
 asyncMapModal.show({ leaflet: L }).then((result) => {
   if (result) console.log(result.lat, result.lng);
@@ -216,7 +221,7 @@ Opens the modal and returns a Promise based on the user’s selection.
 
 ## Styling
 
-Default styles are included. Import:
+Default styles are loaded automatically when you import the main module (with a bundler). To load styles only (e.g. without a bundler or for a separate link tag), use:
 
 ```js
 import 'async-map-modal/style';

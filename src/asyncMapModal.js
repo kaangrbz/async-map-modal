@@ -5,6 +5,8 @@
  * Çoklu seçim modunda liste sağda, checkbox ile seçim ve tek/toplu silme desteklenir.
  */
 
+import './async-map-modal.css';
+
 const DEFAULT_CENTER = [38.7143, 35.5323];
 const DEFAULT_ZOOM = 13;
 const MODAL_ID = 'async-map-modal-root';
