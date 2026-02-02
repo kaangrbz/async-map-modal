@@ -30,9 +30,10 @@ jobs:
       - name: Prepare site (example + src)
         run: |
           mkdir -p deploy/src
-          cp example/index.html deploy/
+          cp example/index.html example/docs.html deploy/
           cp -r src/* deploy/src/
           sed -i 's|../src/|./src/|g' deploy/index.html
+          sed -i 's|../example/index.html|./index.html|g' deploy/docs.html
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
