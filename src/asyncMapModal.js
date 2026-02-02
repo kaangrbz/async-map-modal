@@ -7,13 +7,20 @@
 
 /** Best practice: CSS'i import ile değil runtime'da <link> enjekte ederek yükle (MIME type hatası önlenir). */
 if (typeof document !== 'undefined' && document.head && typeof import.meta !== 'undefined' && import.meta.url) {
-  const linkId = 'async-map-modal-styles';
-  if (!document.getElementById(linkId)) {
+  const base = new URL('./', import.meta.url);
+  if (!document.getElementById('async-map-modal-styles')) {
     const link = document.createElement('link');
-    link.id = linkId;
+    link.id = 'async-map-modal-styles';
     link.rel = 'stylesheet';
-    link.href = new URL('./async-map-modal.css', import.meta.url).href;
+    link.href = new URL('async-map-modal.css', base).href;
     document.head.appendChild(link);
+  }
+  if (!document.getElementById('async-map-modal-leaflet-styles')) {
+    const leafletLink = document.createElement('link');
+    leafletLink.id = 'async-map-modal-leaflet-styles';
+    leafletLink.rel = 'stylesheet';
+    leafletLink.href = new URL('../../leaflet/dist/leaflet.css', base).href;
+    document.head.appendChild(leafletLink);
   }
 }
 

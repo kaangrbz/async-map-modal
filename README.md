@@ -28,23 +28,24 @@ Promise-based map modal component. **Full API parameter documentation:** [exampl
 With Yarn:
 
 ```bash
-yarn add async-map-modal leaflet
+yarn add async-map-modal
 ```
 
-Include Leaflet CSS on the page (for Leaflet’s own styles):
+When you import the main module (ESM), both Leaflet CSS and modal CSS are injected automatically. No manual `<link>` or CSS import needed.
+
+```js
+import asyncMapModal from 'async-map-modal';
+import L from 'leaflet';
+```
+
+If you use CommonJS or the main module is not loaded as ESM, add styles manually:
 
 ```html
 <link rel="stylesheet" href="node_modules/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="node_modules/async-map-modal/src/async-map-modal.css" />
 ```
 
-Or in JS (modal CSS is injected automatically when you import the main module):
-
-```js
-import 'leaflet/dist/leaflet.css';
-import asyncMapModal from 'async-map-modal';
-```
-
-To load styles only (e.g. separate link tag): `import 'async-map-modal/style'`.
+Or in JS: `import 'leaflet/dist/leaflet.css'` and `import 'async-map-modal/style'`.
 
 ## Usage
 
@@ -53,7 +54,6 @@ To load styles only (e.g. separate link tag): `import 'async-map-modal/style'`.
 ```js
 import asyncMapModal from 'async-map-modal';
 import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
 
 const result = await asyncMapModal.show({
   title: 'Select location',
