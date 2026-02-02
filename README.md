@@ -1,6 +1,6 @@
 # async-map-modal
 
-Promise-based map modal component. Opens a Leaflet map inside a modal; the user selects coordinates by clicking on the map, and the selection is returned via a Promise. Designed with the same publishable structure (exports, style, API style) as the [async-modal](https://www.npmjs.com/package/async-modal) package.
+Promise-based map modal component. **Full API parameter documentation:** [docs/API.html](docs/API.html) (also [docs/API.md](docs/API.md) in Turkish) Opens a Leaflet map inside a modal; the user selects coordinates by clicking on the map, and the selection is returned via a Promise. Designed with the same publishable structure (exports, style, API style) as the [async-modal](https://www.npmjs.com/package/async-modal) package.
 
 ## Features
 

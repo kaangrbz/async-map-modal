@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference — async-map-modal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0c0f14;
+      --bg-card: #141922;
+      --bg-code: #0d1117;
+      --text: #e6edf3;
+      --text-muted: #8b949e;
+      --accent: #f97316;
+      --accent-dim: #ea580c;
+      --border: #30363d;
+      --radius: 12px;
+      --font-sans: 'DM Sans', system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text);
+      background: var(--bg);
+      -webkit-font-smoothing: antialiased;
+    }
+    .page { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+    h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.75rem, 4vw, 2.25rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, #fb923c 0%, #f97316 50%, #ea580c 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle { color: var(--text-muted); font-size: 1rem; margin: 0 0 2rem; }
+    nav.toc {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1rem 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+    nav.toc h2 { font-size: 0.9375rem; margin: 0 0 0.75rem; color: var(--text-muted); font-weight: 600; }
+    nav.toc ul { margin: 0; padding: 0 0 0 1.25rem; }
+    nav.toc li { margin: 0.35rem 0; }
+    nav.toc a { color: var(--accent); text-decoration: none; }
+    nav.toc a:hover { text-decoration: underline; }
+    section { margin-bottom: 2.5rem; }
+    section h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text);
+      margin: 0 0 0.75rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+    section:first-of-type h2 { border-top: none; padding-top: 0; }
+    section h3 { font-size: 1rem; font-weight: 600; margin: 1.25rem 0 0.5rem; color: var(--text); }
+    p { margin: 0 0 0.75rem; color: var(--text-muted); font-size: 0.9375rem; }
+    .api-doc p { color: var(--text); }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      margin: 0.75rem 0;
+    }
+    th, td {
+      text-align: left;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--border);
+      vertical-align: top;
+    }
+    th { background: var(--bg-card); color: var(--text); font-weight: 600; }
+    td { color: var(--text-muted); }
+    td code { color: var(--accent); font-size: 0.8125rem; }
+    pre, .code-block {
+      background: var(--bg-code);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+      overflow-x: auto;
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      line-height: 1.55;
+      color: var(--text-muted);
+      margin: 0.75rem 0;
+    }
+    .code-block .k { color: #c678dd; }
+    .code-block .s { color: #98c379; }
+    .code-block .c { color: #6a737d; }
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1.5rem;
+      color: var(--text-muted);
+      font-size: 0.875rem;
+      text-decoration: none;
+    }
+    .back-link:hover { color: var(--accent); }
+    footer { margin-top: 2rem; padding-top: 1.5rem; border-top: 1px solid var(--border); font-size: 0.8125rem; color: var(--text-muted); }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <a href="../example/index.html" class="back-link">← Back to examples</a>
+    <h1>API Reference — async-map-modal</h1>
+    <p class="subtitle">Full parameter documentation for <code>showMapModal(options)</code> and helper functions.</p>
+
+    <nav class="toc" aria-label="Contents">
+      <h2>Contents</h2>
+      <ul>
+        <li><a href="#showmapmodal">showMapModal(options)</a></li>
+        <li><a href="#init">init(options)</a></li>
+        <li><a href="#getconfig">getConfig()</a></li>
+        <li><a href="#settheme">setTheme(theme)</a></li>
+        <li><a href="#setlanguage">setLanguage(lang)</a></li>
+        <li><a href="#summary">Parameter summary table</a></li>
+      </ul>
+    </nav>
+
+    <section id="showmapmodal" class="api-doc">
+      <h2>showMapModal(options)</h2>
+      <p>Opens the map modal. Returns <code>Promise&lt;{ lat, lng } | null&gt;</code> in single-select mode, <code>Promise&lt;Array&lt;{ lat, lng }&gt; | null&gt;</code> in multi-select mode.</p>
+
+      <h3>Mode</h3>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>multiSelect</code></td>
+            <td><code>boolean</code></td>
+            <td><code>false</code></td>
+            <td><code>true</code> = multiple points, list on the right, checkboxes, delete one/all. <code>false</code> = single point.</td>
+          </tr>
+        </tbody>
+      </table>
+      <p><strong>Example — single:</strong></p>
+      <pre class="code-block"><span class="k">const</span> result = <span class="k">await</span> asyncMapModal.show({ leaflet: L });
+<span class="c">// result: { lat: 39.93, lng: 32.85 } or null</span></pre>
+      <p><strong>Example — multiple:</strong></p>
+      <pre class="code-block"><span class="k">const</span> points = <span class="k">await</span> asyncMapModal.show({ multiSelect: <span class="k">true</span>, leaflet: L });
+<span class="c">// points: [{ lat, lng }, ...] or null</span></pre>
+
+      <h3>Title and button labels</h3>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Mode</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>title</code></td><td><code>string</code></td><td>From locale</td><td>both</td><td>Modal title.</td></tr>
+          <tr><td><code>confirmText</code></td><td><code>string</code></td><td>From locale</td><td>both</td><td>Confirm button label (e.g. "Select", "OK").</td></tr>
+          <tr><td><code>cancelText</code></td><td><code>string</code></td><td>From locale</td><td>both</td><td>Cancel button label.</td></tr>
+          <tr><td><code>copyText</code></td><td><code>string</code></td><td>From locale</td><td>both</td><td>Copy coordinates button label.</td></tr>
+          <tr><td><code>deleteSelectedText</code></td><td><code>string</code></td><td>From locale</td><td>multi</td><td>"Delete selected" button label.</td></tr>
+          <tr><td><code>deleteAllText</code></td><td><code>string</code></td><td>From locale</td><td>multi</td><td>"Delete all" button label.</td></tr>
+          <tr><td><code>listTitle</code></td><td><code>string</code></td><td>From locale</td><td>multi</td><td>Right-hand list section title (e.g. "Selected points").</td></tr>
+          <tr><td><code>fitBoundsText</code></td><td><code>string</code></td><td>From locale</td><td>multi</td><td>"Show all" (fit all points on map) button label.</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.show({
+  title: <span class="s">'Select delivery address'</span>,
+  confirmText: <span class="s">'Deliver here'</span>,
+  cancelText: <span class="s">'Cancel'</span>,
+  copyText: <span class="s">'Copy coordinates'</span>,
+  leaflet: L,
+});</pre>
+
+      <h3>Map initial values</h3>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>initialCenter</code></td><td><code>[number, number]</code></td><td><code>[38.7143, 35.5323]</code></td><td>Map center on open <code>[lat, lng]</code>.</td></tr>
+          <tr><td><code>initialZoom</code></td><td><code>number</code></td><td><code>13</code></td><td>Initial zoom level (0–22, depends on tile maxZoom).</td></tr>
+          <tr><td><code>mapHeight</code></td><td><code>string</code></td><td><code>'400px'</code></td><td>CSS height of map container (e.g. <code>'50vh'</code>, <code>'300px'</code>).</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.show({
+  initialCenter: [41.0082, 28.9784],
+  initialZoom: 11,
+  mapHeight: <span class="s">'50vh'</span>,
+  leaflet: L,
+});</pre>
+
+      <h3>Marker</h3>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>markerIcon</code></td><td><code>L.Icon | L.DivIcon</code></td><td><code>null</code></td><td>Custom marker icon. <code>null</code> = default Leaflet blue pin. Same icon in single and multi mode.</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block"><span class="k">const</span> customIcon = L.divIcon({
+  className: <span class="s">'my-marker'</span>,
+  html: <span class="s">'&lt;span class="pin"&gt;&lt;/span&gt;'</span>,
+  iconSize: [24, 24],
+  iconAnchor: [12, 24],
+});
+asyncMapModal.show({ markerIcon: customIcon, leaflet: L });</pre>
+
+      <h3>Multi-select only</h3>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>initialPoints</code></td><td><code>Array&lt;{lat,lng}|[number,number]&gt;</code></td><td><code>[]</code></td><td>Points to show in the list when modal opens. User can add/remove; "OK" returns current list.</td></tr>
+          <tr><td><code>maxPoints</code></td><td><code>number | null</code></td><td><code>null</code></td><td>Max number of points. When set, no new point is added above this limit. <code>null</code> = unlimited.</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.show({
+  multiSelect: <span class="k">true</span>,
+  initialPoints: [
+    { lat: 39.9255, lng: 32.8663 },
+    [41.0082, 28.9784],
+  ],
+  maxPoints: 10,
+  leaflet: L,
+});</pre>
+
+      <h3>Selection bounds</h3>
+      <p>Restrict selectable coordinates. Two options:</p>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>bounds</code></td><td><code>[[number, number], [number, number]]</code></td><td>—</td><td><code>[[south, west], [north, east]]</code> — only clicks/paste inside this area are accepted.</td></tr>
+          <tr><td><code>minLat</code>, <code>maxLat</code></td><td><code>number</code></td><td>—</td><td>Latitude min/max.</td></tr>
+          <tr><td><code>minLng</code>, <code>maxLng</code></td><td><code>number</code></td><td>—</td><td>Longitude min/max.</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.show({
+  bounds: [[39.5, 32.0], [42.0, 35.0]],
+  initialCenter: [40.5, 33.5],
+  leaflet: L,
+});</pre>
+
+      <h3>Tile layer</h3>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>tileLayerUrl</code></td><td><code>string</code></td><td>OpenStreetMap</td><td>Tile URL template (e.g. <code>https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png</code>).</td></tr>
+          <tr><td><code>tileLayerAttribution</code></td><td><code>string</code></td><td>© OSM</td><td>Attribution text shown below map.</td></tr>
+          <tr><td><code>tileLayerMaxZoom</code></td><td><code>number</code></td><td><code>18</code></td><td>Max zoom for the layer.</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.show({
+  tileLayerUrl: <span class="s">'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'</span>,
+  tileLayerAttribution: <span class="s">'© CARTO'</span>,
+  tileLayerMaxZoom: 19,
+  leaflet: L,
+});</pre>
+
+      <h3>Language and theme</h3>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>language</code></td><td><code>string</code></td><td>getConfig() or <code>'tr'</code></td><td>UI language: <code>'tr'</code>, <code>'en'</code>, <code>'de'</code>, <code>'es'</code>, <code>'fr'</code>. All strings in-package.</td></tr>
+          <tr><td><code>darkMode</code></td><td><code>'light' | 'dark' | 'auto'</code></td><td>getConfig() or <code>'light'</code></td><td>Modal theme. <code>'auto'</code> = system preference (<code>prefers-color-scheme: dark</code>).</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.show({
+  language: <span class="s">'en'</span>,
+  darkMode: <span class="s">'dark'</span>,
+  leaflet: L,
+});</pre>
+
+      <h3>Leaflet reference</h3>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>leaflet</code></td><td><code>object</code></td><td><code>window.L</code></td><td>Leaflet library object. Required when <code>L</code> is not global (e.g. in ESM).</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block"><span class="k">import</span> L <span class="k">from</span> <span class="s">'leaflet'</span>;
+<span class="k">const</span> result = <span class="k">await</span> asyncMapModal.show({ leaflet: L });</pre>
+    </section>
+
+    <section id="init" class="api-doc">
+      <h2>init(options)</h2>
+      <p>Sets project-wide default language and theme. Subsequent <code>showMapModal</code> calls merge these with their options; per-call <code>language</code> / <code>darkMode</code> take precedence.</p>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>language</code></td><td><code>string</code></td><td>Default language: <code>'tr'</code>, <code>'en'</code>, <code>'de'</code>, <code>'es'</code>, <code>'fr'</code>.</td></tr>
+          <tr><td><code>darkMode</code></td><td><code>'light' | 'dark' | 'auto'</code></td><td>Default theme.</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.init({
+  language: <span class="s">'en'</span>,
+  darkMode: <span class="s">'auto'</span>,
+});</pre>
+    </section>
+
+    <section id="getconfig" class="api-doc">
+      <h2>getConfig()</h2>
+      <p>Returns current project defaults (copy). Use <code>init</code>, <code>setTheme</code>, or <code>setLanguage</code> to change them.</p>
+      <p><strong>Returns:</strong> <code>{ language: string | undefined, darkMode: string | undefined }</code></p>
+      <pre class="code-block"><span class="k">const</span> config = asyncMapModal.getConfig();
+console.log(config.language, config.darkMode);</pre>
+    </section>
+
+    <section id="settheme" class="api-doc">
+      <h2>setTheme(theme)</h2>
+      <p>Sets default theme. Used by <code>showMapModal</code> when <code>options.darkMode</code> is not provided.</p>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>theme</code></td><td><code>'light' | 'dark' | 'auto'</code></td><td>Theme to use.</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.setTheme(<span class="s">'dark'</span>);</pre>
+    </section>
+
+    <section id="setlanguage" class="api-doc">
+      <h2>setLanguage(lang)</h2>
+      <p>Sets default language code.</p>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Description</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>lang</code></td><td><code>string</code></td><td><code>'tr'</code>, <code>'en'</code>, <code>'de'</code>, <code>'es'</code>, <code>'fr'</code>.</td></tr>
+        </tbody>
+      </table>
+      <pre class="code-block">asyncMapModal.setLanguage(<span class="s">'en'</span>);</pre>
+    </section>
+
+    <section id="summary" class="api-doc">
+      <h2>Parameter summary table</h2>
+      <table>
+        <thead>
+          <tr><th>Parameter</th><th>Type</th><th>Default</th><th>Mode</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>multiSelect</td><td>boolean</td><td>false</td><td>—</td></tr>
+          <tr><td>title</td><td>string</td><td>(locale)</td><td>both</td></tr>
+          <tr><td>initialCenter</td><td>[number, number]</td><td>[38.7143, 35.5323]</td><td>both</td></tr>
+          <tr><td>initialZoom</td><td>number</td><td>13</td><td>both</td></tr>
+          <tr><td>confirmText</td><td>string</td><td>(locale)</td><td>both</td></tr>
+          <tr><td>cancelText</td><td>string</td><td>(locale)</td><td>both</td></tr>
+          <tr><td>mapHeight</td><td>string</td><td>'400px'</td><td>both</td></tr>
+          <tr><td>markerIcon</td><td>L.Icon | L.DivIcon</td><td>null</td><td>both</td></tr>
+          <tr><td>copyText</td><td>string</td><td>(locale)</td><td>both</td></tr>
+          <tr><td>deleteSelectedText</td><td>string</td><td>(locale)</td><td>multi</td></tr>
+          <tr><td>deleteAllText</td><td>string</td><td>(locale)</td><td>multi</td></tr>
+          <tr><td>listTitle</td><td>string</td><td>(locale)</td><td>multi</td></tr>
+          <tr><td>fitBoundsText</td><td>string</td><td>(locale)</td><td>multi</td></tr>
+          <tr><td>initialPoints</td><td>Array</td><td>[]</td><td>multi</td></tr>
+          <tr><td>maxPoints</td><td>number | null</td><td>null</td><td>multi</td></tr>
+          <tr><td>bounds</td><td>[[s,w],[n,e]]</td><td>—</td><td>both</td></tr>
+          <tr><td>minLat, maxLat, minLng, maxLng</td><td>number</td><td>—</td><td>both</td></tr>
+          <tr><td>tileLayerUrl</td><td>string</td><td>OSM</td><td>both</td></tr>
+          <tr><td>tileLayerAttribution</td><td>string</td><td>OSM</td><td>both</td></tr>
+          <tr><td>tileLayerMaxZoom</td><td>number</td><td>18</td><td>both</td></tr>
+          <tr><td>language</td><td>string</td><td>tr / getConfig()</td><td>both</td></tr>
+          <tr><td>darkMode</td><td>'light'|'dark'|'auto'</td><td>light / getConfig()</td><td>both</td></tr>
+          <tr><td>leaflet</td><td>object</td><td>window.L</td><td>both</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <footer>
+      API documentation for the async-map-modal package.
+    </footer>
+  </div>
+</body>
+</html>
